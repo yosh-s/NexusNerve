@@ -1,6 +1,6 @@
 impl Calculator.start {
     if not [root --> (`?turn)] {
-        next = root ++> turn(0.0);
+        next = root ++> turn("");
     } else {
         next = [root --> (`?turn)];
     }
@@ -11,28 +11,18 @@ impl Calculator.process_calculation {
     if [-->] {
         visit [-->];
     } else {
-        if self.operation == "+" {
-            here.result = self.num1 + self.num2;
-        } elif self.operation == "-" {
-            here.result = self.num1 - self.num2;
-        } elif self.operation == "*" {
-            here.result = self.num1 * self.num2;
-        } elif self.operation == "/" {
-            if self.num2 != 0 {
-                here.result = self.num1 / self.num2;
-            } else {
-                print("Error: Division by zero is not allowed.");
-                disengage;
-                return;
-            }
-        } else {
+        if self.operation not in ["+", "-", "*", "/"] {
             print("Error: Invalid operation. Use +, -, *, or /.");
             disengage;
             return;
         }
-        # description = give_description(self.num1, self.num2, self.operation, here.result);
-        print(f"Result of {self.num1} {self.operation} {self.num2} = {here.result}");
-        # print(description);
+        if self.operation == "/" and self.num2 == 0 {
+            print("Error: Division by zero is not allowed.");
+            disengage;
+            return;
+        }
+        here.result = calculate(self.num1, self.num2, self.operation);
+        print(f"Result: {self.num1} {self.operation} {self.num2} = {here.result}");
         disengage;
     }
 }
